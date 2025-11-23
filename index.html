@@ -1,15 +1,30 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
+    <script>
+  window.addEventListener("error", function(e) {
+    const box = document.getElementById("debug-log");
+    if (box) box.innerText += "ERR: " + e.message + "\n";
+  });
+</script>
+
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Plant AR</title>
 
-    <!-- AFRAME -->
+    <!-- AFRAME MUST LOAD FIRST -->
     <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
 
-    <!-- MINDAR - Properly loaded -->
-    <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.2/dist/mindar-image-aframe.prod.js"></script>
+    <!-- MINDAR -->
+    <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.1.5/dist/mindar-image.prod.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/mind-ar@1.1.5/dist/mindar-image.prod.css" />
+
+    <style>
+      body, html {
+        margin: 0;
+        overflow: hidden;
+      }
+    </style>
   </head>
 
   <body>
@@ -17,3 +32,4 @@
     <script type="module" src="/src/main.jsx"></script>
   </body>
 </html>
+
