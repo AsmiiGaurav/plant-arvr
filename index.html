@@ -1,23 +1,18 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <script>
-  window.addEventListener("error", function(e) {
-    const box = document.getElementById("debug-log");
-    if (box) box.innerText += "ERR: " + e.message + "\n";
-  });
-</script>
-
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
     <title>Plant AR</title>
 
     <!-- AFRAME MUST LOAD FIRST -->
     <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
 
-    <!-- MINDAR -->
-    <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.1.5/dist/mindar-image.prod.js"></script>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/mind-ar@1.1.5/dist/mindar-image.prod.css" />
+    <!-- MINDAR with A-Frame integration -->
+    <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-aframe.prod.js"></script>
 
     <style>
       body, html {
@@ -29,7 +24,26 @@
 
   <body>
     <div id="root"></div>
+    
+    <!-- Debug logger that waits for React to mount -->
+    <script>
+      window.debugLog = function(msg) {
+        const box = document.getElementById("debug-log");
+        if (box) {
+          box.innerText += msg + "\n";
+          box.scrollTop = box.scrollHeight;
+        } else {
+          console.log("DEBUG:", msg);
+        }
+      };
+      
+      window.addEventListener("error", function(e) {
+        window.debugLog("ERR: " + e.message);
+      });
+      
+      console.log("Scripts loaded, waiting for React...");
+    </script>
+    
     <script type="module" src="/src/main.jsx"></script>
   </body>
 </html>
-

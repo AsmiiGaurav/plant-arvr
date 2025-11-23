@@ -1,8 +1,58 @@
+import { useEffect, useRef } from "react";
+
 export default function ARScene() {
+  const sceneRef = useRef(null);
+
+  useEffect(() => {
+    window.debugLog("React component mounted");
+    window.debugLog("User Agent: " + navigator.userAgent);
+    
+    // Check for HTTPS
+    if (window.location.protocol !== "https:" && window.location.hostname !== "localhost") {
+      window.debugLog("WARNING: Not on HTTPS! Camera may not work.");
+    }
+    
+    const scene = sceneRef.current;
+    if (!scene) {
+      window.debugLog("ERROR: Scene ref not found");
+      return;
+    }
+
+    window.debugLog("Scene element found, setting up listeners...");
+
+    // Handle MindAR events
+    scene.addEventListener("arReady", () => {
+      window.debugLog("✓ AR Ready");
+    });
+
+    scene.addEventListener("arError", (event) => {
+      window.debugLog("✗ AR Error: " + JSON.stringify(event.detail));
+    });
+
+    // Request camera permission explicitly on mobile
+    if (/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) {
+      window.debugLog("Mobile device detected, requesting camera...");
+      
+      navigator.mediaDevices
+        .getUserMedia({ video: { facingMode: "environment" } })
+        .then(() => {
+          window.debugLog("✓ Camera permission granted");
+        })
+        .catch((err) => {
+          window.debugLog("✗ Camera permission denied: " + err.message);
+        });
+    }
+
+    return () => {
+      window.debugLog("Component unmounting");
+    };
+  }, []);
+
   return (
     <>
       <a-scene
-        mindar-image="imageTargetSrc: /targets.mind"
+        ref={sceneRef}
+        mindar-image="imageTargetSrc: ./targets.mind; autoStart: true; uiLoading: no; uiError: no; uiScanning: no;"
         color-space="sRGB"
         embedded
         vr-mode-ui="enabled: false"
@@ -40,6 +90,9 @@ export default function ARScene() {
           padding: "10px",
           overflowY: "scroll",
           zIndex: 9999,
+          fontFamily: "monospace",
+          whiteSpace: "pre-wrap",
+          wordBreak: "break-word",
         }}
       ></div>
     </>
